@@ -3,7 +3,7 @@ import mysql.connector
 from mysql.connector import Error
 
 # MySQL connection details
-host=st.secrets["ngrok_host"],
+host=st.secrets[ngrok_host],
 port=st.secrets["ngrok_port"],
 user=st.secrets["mysql_user"],
 password=st.secrets["mysql_password"],
