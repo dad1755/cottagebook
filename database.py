@@ -4,12 +4,13 @@ import mysql.connector
 
 # Database configuration
 # Database configuration (update as necessary)
+# Database configuration (update as necessary)
 DB_CONFIG = {
-    'host': '0.tcp.ap.ngrok.io',  # ngrok host
-    'database': 'sql12741294',     # Your database name
-    'user': 'root',                # MySQL user
-    'password': 'altisBGP@192',    # MySQL password
-    'port': 12691                  # ngrok port
+    host=db_config["host"],
+    port=db_config["port"],
+    user=db_config["user"],
+    password=db_config["password"],
+    database=db_config["database"]
 }
 
 def connect_to_database():
