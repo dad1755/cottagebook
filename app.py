@@ -1,55 +1,22 @@
+#app.py file
 import streamlit as st
-import mysql.connector
-from mysql.connector import Error
+from booking import show_booking
+from housekeeping import show_housekeeping
+from management import show_management
 
-# MySQL connection details
-host=st.secrets["host"],
-port=st.secrets["port"],
-user=st.secrets["user"],
-password=st.secrets["password"],
-database=st.secrets["database"]
+# Set the title of the app
+st.title("Cottage Booking System Group 2")
 
-def connect_to_mysql():
-    try:
-        connection = mysql.connector.connect(
-            host=host,
-            port=port,
-            user=user,
-            password=password,
-            database=database
-        )
+# Create a sidebar with three options
+st.sidebar.title("Menu")
+option = st.sidebar.radio("Select an option:", ("Booking", "House Keeping", "Management"))
 
+# Display content based on the selected option
+if option == "Booking":
+    show_booking()
 
-        
-        if connection.is_connected():
-            st.success("Successfully connected to MySQL!")
-            return connection
-    except Error as e:
-        st.error(f"Error: {e}")
-        return None
+elif option == "House Keeping":
+    show_housekeeping()
 
-def fetch_data(connection):
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM BOOKING LIMIT 5;")  # Replace with your query
-    rows = cursor.fetchall()
-    return rows
-
-# Streamlit app layout
-st.title("MySQL Connection Test")
-
-# Connect to MySQL
-connection = connect_to_mysql()
-
-if connection:
-    # Fetch data from MySQL if connection is successful
-    data = fetch_data(connection)
-
-    # Display the data in the Streamlit app
-    if data:
-        st.write("Fetched data from MySQL:")
-        st.write(data)
-
-    connection.close()
-else:
-    st.warning("Unable to connect to MySQL. Please check your connection.")
-
+elif option == "Management":
+    show_management()
