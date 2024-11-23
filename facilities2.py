@@ -231,7 +231,7 @@ def show_facilities2_management():
         # Update and Delete functionality for Air Conditioning Rooms
         aircond_id = st.selectbox("Select Air Conditioning Room to Update/Delete", [a['aircond_id'] for a in aircond_rooms_data])
         if st.button("Update Air Conditioning Room"):
-            update_aircond_unit = st.text_input("Update Air Conditioning Unit Name")
+            update_aircond_unit = st.text_input("Update Aircond Unit")
             update_aircond_room(aircond_id, update_aircond_unit)
 
         if st.button("Delete Air Conditioning Room"):
