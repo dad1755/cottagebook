@@ -220,7 +220,7 @@ def show_facilities2_management():
 
     # Air Conditioning Room Management
     st.write("#### Air Conditioning Room Management")
-    aircond_unit = st.text_input("Air Conditioning Unit Name")
+    aircond_unit = st.text_input("How many room with aircond")
     if st.button("Add Air Conditioning Room"):
         create_aircond_room(aircond_unit)
 
