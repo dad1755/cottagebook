@@ -2,7 +2,8 @@ import streamlit as st
 from sqlalchemy import create_engine, text
 
 # Database connection setup
-DATABASE_URL = "mysql+mysqlconnector://root:altisBGP@192@0.tcp.ap.ngrok.io:12691/sql12741294"
+# Retrieve the DATABASE_URL from st.secrets
+database_url = st.secrets["DATABASE_URL"]
 engine = create_engine(DATABASE_URL)
 
 # Load data function
