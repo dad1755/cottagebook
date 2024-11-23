@@ -1,1 +1,52 @@
+import streamlit as st
+import mysql.connector
+from mysql.connector import Error
+
+# MySQL connection details
+ngrok_host = "0.tcp.ap.ngrok.io"
+ngrok_port = 11157  # Use the port shown by ngrok
+mysql_user = "root"
+mysql_password = "altisBGP@192"
+mysql_database = "sql12741294"
+
+def connect_to_mysql():
+    try:
+        connection = mysql.connector.connect(
+            host=ngrok_host,
+            port=ngrok_port,
+            user=mysql_user,
+            password=mysql_password,
+            database=mysql_database
+        )
+        if connection.is_connected():
+            st.success("Successfully connected to MySQL!")
+            return connection
+    except Error as e:
+        st.error(f"Error: {e}")
+        return None
+
+def fetch_data(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM BOOKING LIMIT 5;")  # Replace with your query
+    rows = cursor.fetchall()
+    return rows
+
+# Streamlit app layout
+st.title("MySQL Connection Test")
+
+# Connect to MySQL
+connection = connect_to_mysql()
+
+if connection:
+    # Fetch data from MySQL if connection is successful
+    data = fetch_data(connection)
+
+    # Display the data in the Streamlit app
+    if data:
+        st.write("Fetched data from MySQL:")
+        st.write(data)
+
+    connection.close()
+else:
+    st.warning("Unable to connect to MySQL. Please check your connection.")
 
