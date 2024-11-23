@@ -3,11 +3,11 @@ import mysql.connector
 from mysql.connector import Error
 
 # MySQL connection details
-host=st.secrets[ngrok_host],
-port=st.secrets["ngrok_port"],
-user=st.secrets["mysql_user"],
-password=st.secrets["mysql_password"],
-database=st.secrets["mysql_database"]
+host=st.secrets["host"],
+port=st.secrets["port"],
+user=st.secrets["user"],
+password=st.secrets["password"],
+database=st.secrets["database"]
 
 def connect_to_mysql():
     try:
@@ -18,6 +18,9 @@ def connect_to_mysql():
             password=mysql_password,
             database=mysql_database
         )
+
+
+        
         if connection.is_connected():
             st.success("Successfully connected to MySQL!")
             return connection
