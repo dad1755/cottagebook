@@ -4,11 +4,11 @@ from mysql.connector import Error
 
 # Database configuration (update as necessary)
 DB_CONFIG = {
-    host=db_config["host"],
-    port=db_config["port"],
-    user=db_config["user"],
-    password=db_config["password"],
-    database=db_config["database"]
+    'host': '0.tcp.ap.ngrok.io',  # ngrok host
+    'database': 'sql12741294',     # Your database name
+    'user': 'root',                # MySQL user
+    'password': 'altisBGP@192',    # MySQL password
+    'port': 11157             # ngrok port
 }
 
 def execute_query(query, params=None):
