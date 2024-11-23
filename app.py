@@ -3,11 +3,11 @@ import mysql.connector
 from mysql.connector import Error
 
 # MySQL connection details
-ngrok_host = "0.tcp.ap.ngrok.io"
-ngrok_port = 11157  # Use the port shown by ngrok
-mysql_user = "root"
-mysql_password = "altisBGP@192"
-mysql_database = "sql12741294"
+host=st.secrets["ngrok_host"],
+port=st.secrets["ngrok_port"],
+user=st.secrets["mysql_user"],
+password=st.secrets["mysql_password"],
+database=st.secrets["mysql_database"]
 
 def connect_to_mysql():
     try:
