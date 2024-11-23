@@ -3,14 +3,15 @@ import mysql.connector
 from mysql.connector import Error
 import pandas as pd
 
-# Database configuration (update as necessary)
+# Database configuration
 DB_CONFIG = {
-    host=db_config["host"],
-    port=db_config["port"],
-    user=db_config["user"],
-    password=db_config["password"],
-    database=db_config["database"]
+    'host': '0.tcp.ap.ngrok.io',  # ngrok host
+    'database': 'sql12741294',     # Your database name
+    'user': 'root',                # MySQL user
+    'password': 'altisBGP@192',    # MySQL password
+    'port': 11157                  # ngrok port
 }
+
 def create_connection():
     """Create a database connection using a context manager."""
     try:
@@ -154,35 +155,66 @@ def show_cottage_management():
         cottage_df['cot_id'].tolist()
     )
 
+    # Check for empty DataFrames and handle None values
+    if pool_df.empty:
+        st.warning("No Pool data available.")
+        return
     pool_id = st.selectbox(
         "Select Pool",
-        options=pool_df.apply(lambda x: f"{x['pool_id']} - {x['pool_detail']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=pool_df.apply(
+            lambda x: f"{x['pool_id']} - {x['pool_detail'] if x['pool_detail'] else 'No Details'}", axis=1
+        ).tolist()
+    ).split(' ')[0] if not pool_df.empty else None
 
+    if loc_df.empty:
+        st.warning("No Location data available.")
+        return
     loc_id = st.selectbox(
         "Select Location",
-        options=loc_df.apply(lambda x: f"{x['loc_id']} - {x['loc_details']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=loc_df.apply(
+            lambda x: f"{x['loc_id']} - {x['loc_details'] if x['loc_details'] else 'No Details'}", axis=1
+        ).tolist()
+    ).split(' ')[0] if not loc_df.empty else None
 
+    if room_df.empty:
+        st.warning("No Room data available.")
+        return
     room_id = st.selectbox(
         "Select Room",
-        options=room_df.apply(lambda x: f"{x['room_id']} - {x['room_details']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=room_df.apply(
+            lambda x: f"{x['room_id']} - {x['room_details'] if x['room_details'] else 'No Details'}", axis=1
+        ).tolist()
+    ).split(' ')[0] if not room_df.empty else None
 
+    if max_pax_df.empty:
+        st.warning("No Max Pax data available.")
+        return
     max_pax_id = st.selectbox(
         "Select Max Pax",
-        options=max_pax_df.apply(lambda x: f"{x['max_pax_id']} - {x['max_pax_details']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=max_pax_df.apply(
+            lambda x: f"{x['max_pax_id']} - {x['max_pax_details'] if x['max_pax_details'] else 'No Details'}", axis=1
+        ).tolist()
+    ).split(' ')[0] if not max_pax_df.empty else None
 
+    if ct_df.empty:
+        st.warning("No Cottage Type data available.")
+        return
     ct_id = st.selectbox(
         "Select Cottage Type",
-        options=ct_df.apply(lambda x: f"{x['ct_id']} - {x['ct_details']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=ct_df.apply(
+            lambda x: f"{x['ct_id']} - {x['ct_details'] if x['ct_details'] else 'No Details'}", axis=1
+        ).tolist()
+    ).split(' ')[0] if not ct_df.empty else None
 
+    if ct_stat_df.empty:
+        st.warning("No Cottage Status data available.")
+        return
     ct_id_stat = st.selectbox(
         "Select Cottage Status",
-        options=ct_stat_df.apply(lambda x: f"{x['cottage_status_id']} - {x['ct_status_details']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=ct_stat_df.apply(
+            lambda x: f"{x['cottage_status_id']} - {x['ct_status_details'] if x['ct_status_details'] else 'No Details'}", axis=1
+        ).tolist()
+    ).split(' ')[0] if not ct_stat_df.empty else None
 
     has_balcony = st.radio(
         "Does the Cottage have a Balcony?",
@@ -190,37 +222,52 @@ def show_cottage_management():
         format_func=lambda x: "Yes" if x else "No"
     )
 
-    toilet_id = st.selectbox(
-        "Select Number of Toilets",
-        toilet_df.apply(lambda x: f"{x['cot_toilet_id']} - {x['num_toilets']}", axis=1).tolist()
-    ).split(' ')[0]
+    if toilet_df.empty:
+        st.warning("No Toilet data available.")
+        return
+    cot_toilet_id = st.selectbox(
+        "Select Toilet",
+        options=toilet_df['cot_toilet_id'].tolist()
+    ) if not toilet_df.empty else None
 
-    storey_id = st.selectbox(
-        "Select Number of Storeys",
-        storey_df.apply(lambda x: f"{x['cot_storey_id']} - {x['num_storeys']}", axis=1).tolist()
-    ).split(' ')[0]
+    if storey_df.empty:
+        st.warning("No Storey data available.")
+        return
+    cot_storey_id = st.selectbox(
+        "Select Storey",
+        options=storey_df['cot_storey_id'].tolist()
+    ) if not storey_df.empty else None
 
+    if aircond_df.empty:
+        st.warning("No Aircondition data available.")
+        return
     aircond_id = st.selectbox(
-        "Select Air Conditioning Unit",
-        aircond_df.apply(lambda x: f"{x['aircond_id']} - {x['aircond_unit']}", axis=1).tolist()
-    ).split(' ')[0]
+        "Select Aircondition",
+        options=aircond_df['aircond_id'].tolist()
+    ) if not aircond_df.empty else None
 
+    if kitchen_df.empty:
+        st.warning("No Kitchen data available.")
+        return
     kitchen_type_id = st.selectbox(
         "Select Kitchen Type",
-        kitchen_df.apply(lambda x: f"{x['kitchen_type_id']} - {x['kitchen_type_name']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=kitchen_df['kitchen_type_id'].tolist()
+    ) if not kitchen_df.empty else None
 
+    if parking_df.empty:
+        st.warning("No Parking data available.")
+        return
     parking_type_id = st.selectbox(
         "Select Parking Type",
-        parking_df.apply(lambda x: f"{x['parking_type_id']} - {x['parking_type_name']}", axis=1).tolist()
-    ).split(' ')[0]
+        options=parking_df['parking_type_id'].tolist()
+    ) if not parking_df.empty else None
 
-    if st.button("Update Attributes"):
+    # Update the attributes for the selected cottage
+    if st.button("Update Cottage Attributes"):
         update_cottage_attributes_with_new_fields(
             selected_cot_id, pool_id, loc_id, room_id, max_pax_id, ct_id, ct_id_stat,
-            toilet_id, has_balcony, storey_id, aircond_id, kitchen_type_id, parking_type_id
+            cot_toilet_id, has_balcony, cot_storey_id, aircond_id, kitchen_type_id, parking_type_id
         )
 
-# Run the Streamlit app
 if __name__ == "__main__":
     show_cottage_management()
