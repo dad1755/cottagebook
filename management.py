@@ -39,6 +39,7 @@ def show_management():
     with tabs[7]: #Show Database
         show_database_management()
 
+
 # Call the management function to display the UI
 if __name__ == "__main__":
     show_management()
