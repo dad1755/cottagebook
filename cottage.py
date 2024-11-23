@@ -115,6 +115,113 @@ def update_cottage_attributes_with_new_fields(
         cursor.close()
         connection.close()
 
+def manage_cottage_table():
+    """Streamlit interface for managing the COTTAGE table."""
+    st.subheader("Manage Cottages")
+
+    connection = create_connection()
+    if connection is None:
+        return
+
+    try:
+        # Fetch current data from the COTTAGE table
+        query = "SELECT * FROM COTTAGE"
+        cottage_df = pd.read_sql(query, connection)
+    except Error as e:
+        st.error(f"Error while fetching cottages: {e}")
+        return
+    finally:
+        connection.close()
+
+    # Display current cottages
+    st.subheader("Existing Cottages")
+    st.dataframe(cottage_df)
+
+    # Add New Cottage
+    st.subheader("Add New Cottage")
+    with st.form("add_cottage_form"):
+        new_cot_name = st.text_input("Cottage Name")
+        new_cot_price = st.number_input("Cottage Price", min_value=0.0, format="%.2f")
+        add_submit = st.form_submit_button("Add Cottage")
+
+        if add_submit:
+            if new_cot_name and new_cot_price > 0:
+                connection = create_connection()
+                if connection:
+                    try:
+                        cursor = connection.cursor()
+                        query = "INSERT INTO COTTAGE (cot_name, cot_price) VALUES (%s, %s)"
+                        cursor.execute(query, (new_cot_name, new_cot_price))
+                        connection.commit()
+                        st.success("Cottage added successfully!")
+                        st.experimental_rerun()
+                    except Error as e:
+                        st.error(f"Error while adding cottage: {e}")
+                    finally:
+                        cursor.close()
+                        connection.close()
+            else:
+                st.error("Cottage name and price must be provided.")
+
+    # Edit Existing Cottage
+    st.subheader("Edit Cottage")
+    selected_cot_id = st.selectbox(
+        "Select Cottage ID to Edit",
+        options=cottage_df['cot_id'].tolist()
+    )
+
+    selected_cottage = cottage_df[cottage_df['cot_id'] == selected_cot_id].iloc[0]
+    with st.form("edit_cottage_form"):
+        edit_cot_name = st.text_input("Cottage Name", value=selected_cottage['cot_name'])
+        edit_cot_price = st.number_input(
+            "Cottage Price", value=selected_cottage['cot_price'], min_value=0.0, format="%.2f"
+        )
+        edit_submit = st.form_submit_button("Update Cottage")
+
+        if edit_submit:
+            if edit_cot_name and edit_cot_price > 0:
+                connection = create_connection()
+                if connection:
+                    try:
+                        cursor = connection.cursor()
+                        query = "UPDATE COTTAGE SET cot_name = %s, cot_price = %s WHERE cot_id = %s"
+                        cursor.execute(query, (edit_cot_name, edit_cot_price, selected_cot_id))
+                        connection.commit()
+                        st.success(f"Cottage ID {selected_cot_id} updated successfully!")
+                        st.experimental_rerun()
+                    except Error as e:
+                        st.error(f"Error while updating cottage: {e}")
+                    finally:
+                        cursor.close()
+                        connection.close()
+            else:
+                st.error("Cottage name and price must be valid.")
+
+    # Delete Cottage
+    st.subheader("Delete Cottage")
+    del_cot_id = st.selectbox(
+        "Select Cottage ID to Delete",
+        options=cottage_df['cot_id'].tolist()
+    )
+
+    if st.button("Delete Cottage"):
+        connection = create_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                query = "DELETE FROM COTTAGE WHERE cot_id = %s"
+                cursor.execute(query, (del_cot_id,))
+                connection.commit()
+                st.success(f"Cottage ID {del_cot_id} deleted successfully!")
+                st.experimental_rerun()
+            except Error as e:
+                st.error(f"Error while deleting cottage: {e}")
+            finally:
+                cursor.close()
+                connection.close()
+
+
+
 def show_cottage_management():
     """Streamlit interface for cottage management."""
     st.title("Cottage Management")
@@ -270,4 +377,12 @@ def show_cottage_management():
         )
 
 if __name__ == "__main__":
-    show_cottage_management()
+    # Sidebar navigation or tabs for better user experience
+    st.sidebar.title("Navigation")
+    options = ["Manage Cottage Attributes", "Manage Cottage Table"]
+    choice = st.sidebar.radio("Choose an option", options)
+
+    if choice == "Manage Cottage Attributes":
+        show_cottage_management()
+    elif choice == "Manage Cottage Table":
+        manage_cottage_table()
