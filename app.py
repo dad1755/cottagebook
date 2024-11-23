@@ -12,11 +12,11 @@ database=st.secrets["database"]
 def connect_to_mysql():
     try:
         connection = mysql.connector.connect(
-            host=ngrok_host,
-            port=ngrok_port,
-            user=mysql_user,
-            password=mysql_password,
-            database=mysql_database
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
         )
 
 
